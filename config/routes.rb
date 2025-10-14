@@ -1,12 +1,10 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :carts do
-        member do
-          post :add_item
-          delete :remove_item
-        end
-      end
+      resources :carts
+      post "/cart/items", to: "carts#add_item"
+      delete "/cart/items", to: "carts#remove_item"
+      delete "/cart/my_cart", to: "carts#get_my_cart"
     end
   end
 end

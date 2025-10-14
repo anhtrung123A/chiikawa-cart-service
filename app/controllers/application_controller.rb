@@ -1,27 +1,26 @@
 class ApplicationController < ActionController::API
   before_action :authenticate_user_from_jwt
+  include Pundit::Authorization
 
   private
 
-  # Set current_user from JWT token
   def authenticate_user_from_jwt
     token = request.headers["Authorization"]&.split(" ")&.last
-
-    unless token
-      render json: { error: "Token not provided" }, status: :unauthorized
-      return
-    end
+    return render json: { error: "Token not provided" }, status: :unauthorized unless token
 
     begin
-      # Decode the token using your secret
-      payload, _ = JWT.decode(
-        token,
-        ENV["JWT_SECRET"],
-        true,                  # verify signature
-        algorithm: "HS256"     # your JWT algorithm
-      )
+      payload, _ = JWT.decode(token, ENV["JWT_SECRET"], true, algorithm: "HS256")
 
-      @current_user = User.find(payload["sub"])
+      if payload["exp"] && Time.at(payload["exp"]) < Time.now
+        return render json: { error: "Token expired" }, status: :unauthorized
+      end
+
+      @current_user = {
+        id: payload["sub"].to_i,
+        email: payload["email"],
+        full_name: payload["full_name"],
+        role: payload["role"]
+      }.compact
     rescue JWT::DecodeError, JWT::ExpiredSignature
       render json: { error: "Invalid or expired token" }, status: :unauthorized
     end
@@ -29,5 +28,9 @@ class ApplicationController < ActionController::API
 
   def current_user
     @current_user
+  end
+
+  def authenticate_user!
+    render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
   end
 end

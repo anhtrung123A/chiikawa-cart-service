@@ -1,28 +1,21 @@
 class Api::V1::CartsController < ApplicationController
-  before_action :set_cart, only: [:show, :update, :destroy, :add_item, :remove_item]
+  before_action :set_cart, only: [:update, :destroy, :add_item, :remove_item, :get_my_cart]
 
-  # GET /api/v1/carts
   def index
     carts = Cart.all
     render json: carts
   end
 
-  # GET /api/v1/carts/:id
   def show
+    cart = Cart.find(params[:id])
+    authorize cart
+    render json: {cart: cart, total_price: cart.total_price}, status: :ok
+  end
+
+  def get_my_cart
     render json: @cart
   end
 
-  # POST /api/v1/carts
-  def create
-    cart = Cart.new(cart_params)
-    if cart.save
-      render json: cart, status: :created
-    else
-      render json: { errors: cart.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
-  # PUT /api/v1/carts/:id
   def update
     if @cart.update(cart_params)
       render json: @cart
@@ -31,14 +24,13 @@ class Api::V1::CartsController < ApplicationController
     end
   end
 
-  # DELETE /api/v1/carts/:id
   def destroy
     @cart.destroy
     head :no_content
   end
 
-  # POST /api/v1/carts/:id/add_item
   def add_item
+    authorize @cart
     item_params = params.require(:cart_item).permit(:product_id, :name, :image, :price, :quantity)
     existing_item = @cart.cart_items.find { |i| i.product_id == item_params[:product_id] }
 
@@ -55,7 +47,6 @@ class Api::V1::CartsController < ApplicationController
     end
   end
 
-  # DELETE /api/v1/carts/:id/remove_item
   def remove_item
     product_id = params[:product_id]
     item = @cart.cart_items.find { |i| i.product_id == product_id }
@@ -72,9 +63,8 @@ class Api::V1::CartsController < ApplicationController
   private
 
   def set_cart
-    @cart = Cart.find(params[:id])
-  rescue Mongoid::Errors::DocumentNotFound
-    render json: { error: "Cart not found" }, status: :not_found
+    # ✅ Find or create cart for current user
+    @cart = Cart.find_or_create_by(user_id: current_user[:id])
   end
 
   def cart_params
