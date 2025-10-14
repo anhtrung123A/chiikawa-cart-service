@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package order;
+
+service OrderService {
+  rpc Checkout (CheckoutRequest) returns (CheckoutResponse);
+}
+
+message CartItem {
+  string product_id = 1;
+  string name = 2;
+  string image = 3;
+  float price = 4;
+  int32 quantity = 5;
+}
+
+message CheckoutRequest {
+  int32 user_id = 1;
+  repeated CartItem items = 2;
+}
+
+message CheckoutResponse {
+  string order_id = 1;
+  string status = 2;
+  string message = 3;
+}

@@ -15,6 +15,8 @@ gem "mongoid"
 gem "jwt"
 gem "pundit"
 gem "dotenv-rails"
+gem 'grpc'
+gem 'grpc-tools'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

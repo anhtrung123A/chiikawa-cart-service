@@ -1,5 +1,5 @@
 class Api::V1::CartsController < ApplicationController
-  before_action :set_cart, only: [:update, :destroy, :add_item, :remove_item, :get_my_cart]
+  before_action :set_cart, only: [:update, :destroy, :add_item, :remove_item, :get_my_cart, :checkout]
 
   def index
     carts = Cart.all
@@ -57,6 +57,21 @@ class Api::V1::CartsController < ApplicationController
       render json: @cart, status: :ok
     else
       render json: { error: "Item not found" }, status: :not_found
+    end
+  end
+
+  def checkout
+    client = OrderClient.new
+    response = client.checkout(@cart)
+
+    if response
+      render json: {
+        order_id: response.order_id,
+        status: response.status,
+        message: response.message
+      }, status: :ok
+    else
+      render json: { error: "Checkout failed" }, status: :bad_gateway
     end
   end
 
