@@ -61,6 +61,7 @@ class Api::V1::CartsController < ApplicationController
   end
 
   def checkout
+    authorize @cart
     client = OrderClient.new
     response = client.checkout(@cart)
 

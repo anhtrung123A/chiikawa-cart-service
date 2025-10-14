@@ -18,6 +18,10 @@ class CartPolicy
     user[:id] == cart.user_id
   end
 
+  def checkout?
+    user[:id] == cart.user_id
+  end
+
   def index?
     user[:role] == "admin"
   end

@@ -1,5 +1,5 @@
 require "grpc"
-require "order_services_pb"
+require "order"
 
 class OrderClient
   def initialize
