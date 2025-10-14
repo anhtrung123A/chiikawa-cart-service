@@ -15,6 +15,7 @@ gem "mongoid"
 gem "redis"
 gem "jwt"
 gem "pundit"
+gem "dotenv-rails"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
