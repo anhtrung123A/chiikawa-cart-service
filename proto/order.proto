@@ -17,6 +17,7 @@ message CartItem {
 message CheckoutRequest {
   int32 user_id = 1;
   repeated CartItem items = 2;
+  string promotion_code = 3;
 }
 
 message CheckoutResponse {

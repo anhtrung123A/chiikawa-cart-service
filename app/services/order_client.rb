@@ -9,7 +9,7 @@ class OrderClient
     )
   end
 
-  def checkout(cart)
+  def checkout(cart, promotion_code)
     items = cart.cart_items.map do |item|
       Order::CartItem.new(
         product_id: item.product_id,
@@ -22,12 +22,13 @@ class OrderClient
 
     request = Order::CheckoutRequest.new(
       user_id: cart.user_id,
-      items: items
+      items: items,
+      promotion_code: promotion_code
     )
 
     @stub.checkout(request)
   rescue GRPC::BadStatus => e
-    Rails.logger.error "❌ gRPC checkout failed: #{e.message}"
+    Rails.logger.error "gRPC checkout failed: #{e.message}"
     nil
   end
 end

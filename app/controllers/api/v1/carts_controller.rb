@@ -31,7 +31,7 @@ class Api::V1::CartsController < ApplicationController
 
   def add_item
     authorize @cart
-    item_params = require(:cart_item).permit(:product_id, :quantity)
+    item_params = params.require(:cart_item).permit(:product_id, :quantity)
     existing_item = @cart.cart_items.find { |i| i.product_id == item_params[:product_id] }
 
     if existing_item
@@ -45,14 +45,15 @@ class Api::V1::CartsController < ApplicationController
         else
           @cart.cart_items.build(
             product_id: product.id,
-            product_name: product.name,
+            name: product.name,
             price: product.price,
             image: product.image,
             quantity: item_params[:quantity]
           )
         end
       rescue Mongoid::Errors::DocumentNotFound
-        render json: { error: "Product not found" }, status: :not_found      
+        render json: { error: "Product not found" }, status: :not_found 
+        return     
       end
     end
 
@@ -79,7 +80,7 @@ class Api::V1::CartsController < ApplicationController
   def checkout
     authorize @cart
     client = OrderClient.new
-    response = client.checkout(@cart)
+    response = client.checkout(@cart, params[:promotion_code])
 
     if response
       render json: {
