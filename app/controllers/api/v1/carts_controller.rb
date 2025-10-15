@@ -31,13 +31,29 @@ class Api::V1::CartsController < ApplicationController
 
   def add_item
     authorize @cart
-    item_params = params.require(:cart_item).permit(:product_id, :name, :image, :price, :quantity)
+    item_params = require(:cart_item).permit(:product_id, :quantity)
     existing_item = @cart.cart_items.find { |i| i.product_id == item_params[:product_id] }
 
     if existing_item
       existing_item.quantity += item_params[:quantity].to_i
     else
-      @cart.cart_items.build(item_params)
+      begin
+        product = Product.find_by(id: item_params[:product_id])
+        if product.sold_out?
+          render json: { error: "Product sold out" }, status: :unprocessable_entity
+          return   
+        else
+          @cart.cart_items.build(
+            product_id: product.id,
+            product_name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: item_params[:quantity]
+          )
+        end
+      rescue Mongoid::Errors::DocumentNotFound
+        render json: { error: "Product not found" }, status: :not_found      
+      end
     end
 
     if @cart.save
