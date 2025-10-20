@@ -115,7 +115,10 @@ class Api::V1::CartsController < ApplicationController
   def checkout
     authorize @cart
     client = OrderClient.new
-    response = client.checkout(@cart, params[:promotion_code])
+    delivery_address = params.require(:delivery_address).permit(
+      :city, :location_detail, :phone_number, :recipient_name, :country, :province
+    ).to_h
+    response = client.checkout(@cart, params[:promotion_code], delivery_address)
 
     if response
       @cart.cart_items.destroy
@@ -132,7 +135,6 @@ class Api::V1::CartsController < ApplicationController
   private
 
   def set_cart
-    # ✅ Find or create cart for current user
     @cart = Cart.find_or_create_by(user_id: current_user[:id])
   end
 

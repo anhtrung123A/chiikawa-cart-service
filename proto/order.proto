@@ -6,6 +6,15 @@ service OrderService {
   rpc Checkout (CheckoutRequest) returns (CheckoutResponse);
 }
 
+message DeliveryAddress {
+  string country = 1;
+  string province = 2;
+  string city = 3;
+  string location_detail = 4;
+  string phone_number = 5;
+  string recipient_name = 6;
+}
+
 message CartItem {
   string product_id = 1;
   string name = 2;
@@ -18,6 +27,7 @@ message CheckoutRequest {
   int32 user_id = 1;
   repeated CartItem items = 2;
   string promotion_code = 3;
+  DeliveryAddress delivery_address = 4;
 }
 
 message CheckoutResponse {

@@ -5,12 +5,13 @@
 require 'google/protobuf'
 
 
-descriptor_data = "\n\x0border.proto\x12\x05order\"\\\n\x08\x43\x61rtItem\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05image\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x02\x12\x10\n\x08quantity\x18\x05 \x01(\x05\"Z\n\x0f\x43heckoutRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x05\x12\x1e\n\x05items\x18\x02 \x03(\x0b\x32\x0f.order.CartItem\x12\x16\n\x0epromotion_code\x18\x03 \x01(\t\"E\n\x10\x43heckoutResponse\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t2K\n\x0cOrderService\x12;\n\x08\x43heckout\x12\x16.order.CheckoutRequest\x1a\x17.order.CheckoutResponseb\x06proto3"
+descriptor_data = "\n\x0border.proto\x12\x05order\"\x89\x01\n\x0f\x44\x65liveryAddress\x12\x0f\n\x07\x63ountry\x18\x01 \x01(\t\x12\x10\n\x08province\x18\x02 \x01(\t\x12\x0c\n\x04\x63ity\x18\x03 \x01(\t\x12\x17\n\x0flocation_detail\x18\x04 \x01(\t\x12\x14\n\x0cphone_number\x18\x05 \x01(\t\x12\x16\n\x0erecipient_name\x18\x06 \x01(\t\"\\\n\x08\x43\x61rtItem\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05image\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x02\x12\x10\n\x08quantity\x18\x05 \x01(\x05\"\x8c\x01\n\x0f\x43heckoutRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\x05\x12\x1e\n\x05items\x18\x02 \x03(\x0b\x32\x0f.order.CartItem\x12\x16\n\x0epromotion_code\x18\x03 \x01(\t\x12\x30\n\x10\x64\x65livery_address\x18\x04 \x01(\x0b\x32\x16.order.DeliveryAddress\"E\n\x10\x43heckoutResponse\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t2K\n\x0cOrderService\x12;\n\x08\x43heckout\x12\x16.order.CheckoutRequest\x1a\x17.order.CheckoutResponseb\x06proto3"
 
 pool = ::Google::Protobuf::DescriptorPool.generated_pool
 pool.add_serialized_file(descriptor_data)
 
 module Order
+  DeliveryAddress = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("order.DeliveryAddress").msgclass
   CartItem = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("order.CartItem").msgclass
   CheckoutRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("order.CheckoutRequest").msgclass
   CheckoutResponse = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("order.CheckoutResponse").msgclass
