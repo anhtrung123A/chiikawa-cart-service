@@ -29,4 +29,8 @@ class CartPolicy
   def show?
     user[:id] == cart.user_id || user[:role] == "admin"
   end
+
+  def update_item_quantity?
+    user[:id] == cart.user_id
+  end
 end
