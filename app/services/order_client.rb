@@ -3,10 +3,9 @@ require "order"
 
 class OrderClient
   def initialize
-    @stub = Order::OrderService::Stub.new(
-      ENV.fetch("ORDER_SERVICE_URL", "localhost:50051"),
-      :this_channel_is_insecure
-    )
+    host = ENV['ORDER_SERVICE_HOST'] || 'localhost'
+    port = ENV['ORDER_SERVICE_PORT'] || '50051'
+    @stub = Order::OrderService::Stub.new("#{host}:#{port}", :this_channel_is_insecure)
   end
 
   def checkout(cart, promotion_code, delivery_address)

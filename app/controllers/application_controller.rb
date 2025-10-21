@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
   private
 
   def authenticate_user_from_jwt
+    puts "key: ", ENV["JWT_SECRET"]
     token = request.headers["Authorization"]&.split(" ")&.last
     return render json: { error: "Token not provided" }, status: :unauthorized unless token
 
